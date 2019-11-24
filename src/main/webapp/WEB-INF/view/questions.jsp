@@ -60,55 +60,26 @@
 
     <script>
         function searchViaAjax(id) {
-            var csrfHeaderName = "X-CSRF-TOKEN";
-            var csrfTokenValue;
-
-            var metaTags = document.getElementsByTagName('meta');
-            for(var i = 0; i < metaTags.length; i++) {
-                var metaTagName = metaTags[i].getAttribute("name");
-                if(metaTagName === "_csrf_header")
-                    csrfHeaderName = metaTags[i].getAttribute("content");
-                if(metaTagName === "_csrf")
-                    csrfTokenValue = metaTags[i].getAttribute("content");
-            }
-
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "./addAnsweredQuestion?id=" + id, false);
-            xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+            xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
             xhr.send();
-            //
-            //
-            //
-            // $.ajax({
-            //
-            //     type : "POST",
-            //     url : "./addAnsweredQuestion",
-            //     data : {id:id},
-            //     timeout : 100000,
-            //     beforeSend:function(xhr){xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);},
-            //     success : function(id) {
-            //         alert("success");
-            //         console.log("SUCCESS: ", id);
-            //         display(id);
-            //         alert(response);
-            //     },
-            //     error : function(e) {
-            //         alert("error");
-            //         console.log("ERROR: ", e);
-            //         display(e);
-            //     },
-            //     done : function(e) {
-            //         alert("done");
-            //         console.log("DONE");
-            //     }
-            // });
+        }
+    </script>
+
+    <script type="text/javascript">
+        function deleteQuestion(questionId) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "./deleteQuestion?questionId=" + questionId, false);
+            xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+            xhr.send();
+            location.reload();
         }
     </script>
 
     <title>Список вопросов</title>
 </head>
 <body>
-<%--<button onclick="searchViaAjax(1)">Ajax</button>--%>
 <p>
     Пользователь: <security:authentication property="principal.username"/>
     <form:form action="${pageContext.request.contextPath}/logout"
@@ -126,98 +97,120 @@ ${workshop.explanations}
 <br>
 <br>
 
-<form action="${pageContext.request.contextPath}/questions" method="get">
-    <table class="table">
-        <thead class="thead-dark">
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col" style="width: 5%">#</th>
+        <th scope="col">Предложение</th>
+
+        <security:authorize access="hasAnyRole('STUDENT','MODERATOR')">
+            <th scope="col">Ваш ответ</th>
+            <th scope="col" style="width: 7%">Результат</th>
+        </security:authorize>
+
+        <security:authorize access="hasAnyRole('TEACHER','ADMIN')">
+            <th scope="col">Перевод</th>
+        </security:authorize>
+
+        <security:authorize access="hasAnyRole('MODERATOR','TEACHER','ADMIN')">
+            <th scope="col">Действия</th>
+        </security:authorize>
+    </tr>
+
+    </thead>
+
+
+    <tbody>
+    <c:forEach var="question" items="${workshop.questions}" varStatus="vs">
         <tr>
-            <th scope="col" style="width: 5%">#</th>
-            <th scope="col">Предложение</th>
-
+            <th scope="row">${vs.count}</th>
+            <td>${question.russian}</td>
             <security:authorize access="hasAnyRole('STUDENT','MODERATOR')">
-                <th scope="col">Ваш ответ</th>
-                <th scope="col" style="width: 7%">Результат</th>
-            </security:authorize>
 
+                <td>
+                    <form action="${pageContext.request.contextPath}/questions" method="post">
+                        <div class="input-group mb-3">
+                            <input id="${question.id}" type="text" class="form-control" placeholder="Ответ"
+                            <c:if test="${answeredQuestionsIds.contains(question.id)}">
+                                   value="${question.english}"
+                            </c:if>
+                                   aria-describedby="button-addon2"
+                                   onkeyup="checkForMistakes(getTextFromTextBox(${question.id}),'${question.english}',${question.id},event)">
+
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="button-addon2"
+                                        onclick="checkForMistakes(getTextFromTextBox(${question.id}),'${question.english}',${question.id},13)">
+                                    Проверить
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </td>
+
+                <td>
+                    <div id="success-fail-alert${question.id}" role="alert"
+                            <c:choose>
+                                <c:when test="${answeredQuestionsIds.contains(question.id)}">
+                                    class="alert alert-success"
+                                </c:when>
+                                <c:otherwise>
+                                    class="alert d-none"
+                                </c:otherwise>
+                            </c:choose>>
+                        <i id="success-fail-icon${question.id}" class="fas fa-check-circle"></i>
+                    </div>
+                </td>
+            </security:authorize>
             <security:authorize access="hasAnyRole('TEACHER','ADMIN')">
-                <th scope="col">Перевод</th>
+                <td>
+                        ${question.english}
+                </td>
             </security:authorize>
 
             <security:authorize access="hasAnyRole('MODERATOR','TEACHER','ADMIN')">
-                <th scope="col">Действия</th>
-            </security:authorize>
-        </tr>
-
-        </thead>
-
-
-        <tbody>
-        <c:forEach var="question" items="${workshop.questions}" varStatus="vs">
-            <tr>
-                <th scope="row">${vs.count}</th>
-                <td>${question.russian}</td>
-                <security:authorize access="hasAnyRole('STUDENT','MODERATOR')">
-
-                    <td>
-                        <form action="${pageContext.request.contextPath}/questions" method="post">
-                            <div class="input-group mb-3">
-                                <input id="${question.id}" type="text" class="form-control" placeholder="Ответ"
-                                <c:if test="${answeredQuestionsIds.contains(question.id)}">
-                                       value="${question.english}"
-                                </c:if>
-                                       aria-describedby="button-addon2"
-                                       onkeyup="checkForMistakes(getTextFromTextBox(${question.id}),'${question.english}',${question.id},event)">
-
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button" id="button-addon2"
-                                            onclick="checkForMistakes(getTextFromTextBox(${question.id}),'${question.english}',${question.id},13)">
-                                        Проверить
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </td>
-
-                    <td>
-                        <div id="success-fail-alert${question.id}" role="alert"
-                                <c:choose>
-                                    <c:when test="${answeredQuestionsIds.contains(question.id)}">
-                                        class="alert alert-success"
-                                    </c:when>
-                                    <c:otherwise>
-                                        class="alert d-none"
-                                    </c:otherwise>
-                                </c:choose>>
-                            <i id="success-fail-icon${question.id}" class="fas fa-check-circle"></i>
-                        </div>
-                    </td>
-                </security:authorize>
-                <security:authorize access="hasAnyRole('TEACHER','ADMIN')">
-                    <td>
-                            ${question.russian}
-                    </td>
-                </security:authorize>
-
-                <security:authorize access="hasAnyRole('MODERATOR','TEACHER','ADMIN')">
-                    <td>
-                        <div class="btn-group" role="group" aria-label="Basic example">
+                <td>
+                    <div class="btn-group" role="group" aria-label="Basic example">
                             <button type="submit"
                                     name="workshopIdEdit"
                                     value="${workshop.id}"
                                     class="btn btn-warning">Редактировать
                             </button>
-                            <button type="submit"
-                                    name="workshopIdDelete"
-                                    value="${workshop.id}"
-                                    class="btn btn-danger">Удалить
-                            </button>
+
+<%--                            <button type="button"--%>
+<%--                                    class="btn btn-danger"--%>
+<%--                                    onclick="deleteQuestion(${question.id})"--%>
+<%--                                    name="questionId"--%>
+<%--                                    value="${question.id}">Удалить--%>
+<%--                            </button>--%>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteQuestionModal">
+                            Удалить
+                        </button>
+
+                        <div class="modal fade" id="deleteQuestionModal" tabindex="-1" role="dialog" aria-labelledby="deleteQuestionModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Удалить вопрос?</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+                                        <button type="button" class="btn btn-danger" onclick="deleteQuestion(${question.id})">Да</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </td>
-                </security:authorize>
-            </tr>
-        </c:forEach>
-        </tbody>
-    </table>
-</form>
+
+                    </div>
+                </td>
+            </security:authorize>
+        </tr>
+    </c:forEach>
+    </tbody>
+</table>
+<%--</form>--%>
 
 <security:authorize access="hasAnyRole('MODERATOR','TEACHER','ADMIN')">
     <input type="button" class="btn btn-success" value="Добавить вопрос">
