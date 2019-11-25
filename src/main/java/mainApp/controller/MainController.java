@@ -44,6 +44,17 @@ public class MainController {
         questionService.deleteQuestion(questionId);
     }
 
+    @PostMapping(value = "/editQuestion", params = {"questionId", "english", "russian"})
+    public void editQuestion(@RequestParam("questionId") long questionId,
+                             @RequestParam("english") String english, @RequestParam("russian") String russian) {
+        questionService.editQuestion(questionId, english, russian);
+    }
+
+    @PostMapping(value = "/addQuestion", params = {"workshopId","english", "russian"})
+    public void addQuestion(@RequestParam("workshopId")Long workshopId ,@RequestParam("english") String english, @RequestParam("russian") String russian) {
+        questionService.addQuestion(workshopId, english, russian);
+    }
+
     @PostMapping(value = "/addAnsweredQuestion")
     public void getSearchResultViaAjax(HttpServletRequest request, @RequestParam("id") Long id) {
         User user = (User) request.getSession().getAttribute("user");

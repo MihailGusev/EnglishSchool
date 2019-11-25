@@ -60,7 +60,7 @@
 
     <script>
         function searchViaAjax(id) {
-            var xhr = new XMLHttpRequest();
+            const xhr = new XMLHttpRequest();
             xhr.open("POST", "./addAnsweredQuestion?id=" + id, false);
             xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
             xhr.send();
@@ -69,7 +69,7 @@
 
     <script type="text/javascript">
         function deleteQuestion(questionId) {
-            var xhr = new XMLHttpRequest();
+            const xhr = new XMLHttpRequest();
             xhr.open("POST", "./deleteQuestion?questionId=" + questionId, false);
             xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
             xhr.send();
@@ -77,24 +77,79 @@
         }
     </script>
 
+    <script type="text/javascript">
+        function editQuestion(questionId) {
+            const xhr = new XMLHttpRequest();
+            const english = document.getElementById("english-field" + questionId).value;
+            const russian = document.getElementById("russian-field" + questionId).value;
+            xhr.open("POST", "./editQuestion?questionId=" + questionId
+                + "&english=" + english + "&russian=" + russian, false);
+            xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+            xhr.send();
+            document.getElementById("td-english" + questionId).innerText = english;
+            document.getElementById("td-russian" + questionId).innerText = russian;
+        }
+    </script>
+
+    <script type="text/javascript">
+        function addQuestion() {
+            const xhr = new XMLHttpRequest();
+            const english = document.getElementById("english-field-add").value;
+            const russian = document.getElementById("russian-field-add").value;
+            xhr.open("POST", "./addQuestion?workshopId=" + ${workshop.id}
+                +"&english=" + english + "&russian=" + russian, false);
+            xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+            xhr.send();
+            location.reload();
+        }
+    </script>
+
+    <script type="text/javascript">
+        function logout() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "./logout", false);
+            xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+            xhr.send();
+            location.href = "./login"
+        }
+    </script>
+
     <title>Список вопросов</title>
 </head>
 <body>
-<p>
-    Пользователь: <security:authentication property="principal.username"/>
-    <form:form action="${pageContext.request.contextPath}/logout"
-               method="POST">
-        <input type="submit" value="Выход" class="btn btn-primary"/>
-    </form:form>
-    Роль(и): <security:authentication property="principal.authorities"/>
-    <br><br>
-    Имя: ${user.firstName}, Фамилия: ${user.lastName}
-</p>
 
-<h3>Практикум №${workshop.id}</h3>
-<h4>Пояснения:</h4>
-${workshop.explanations}
-<br>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="./">Главная</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    <security:authentication property="principal.username"/>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <div class="dropdown-item">Роль(и): <security:authentication
+                            property="principal.authorities"/></div>
+                    <div class="dropdown-item">Имя: ${user.firstName}, Фамилия: ${user.lastName}</div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item">
+                        <input type="button" value="Выход" class="btn btn-primary" onclick="logout()"/>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="jumbotron">
+    <h2 class="display-6">Практикум №${workshop.id}</h2>
+    <p>${workshop.explanations}</p>
+</div>
 <br>
 
 <table class="table">
@@ -113,7 +168,7 @@ ${workshop.explanations}
         </security:authorize>
 
         <security:authorize access="hasAnyRole('MODERATOR','TEACHER','ADMIN')">
-            <th scope="col">Действия</th>
+            <th scope="col" style="width: 10%">Действия</th>
         </security:authorize>
     </tr>
 
@@ -124,7 +179,7 @@ ${workshop.explanations}
     <c:forEach var="question" items="${workshop.questions}" varStatus="vs">
         <tr>
             <th scope="row">${vs.count}</th>
-            <td>${question.russian}</td>
+            <td id="td-russian${question.id}">${question.russian}</td>
             <security:authorize access="hasAnyRole('STUDENT','MODERATOR')">
 
                 <td>
@@ -161,64 +216,126 @@ ${workshop.explanations}
                     </div>
                 </td>
             </security:authorize>
+
             <security:authorize access="hasAnyRole('TEACHER','ADMIN')">
-                <td>
-                        ${question.english}
-                </td>
+                <td id="td-english${question.id}">${question.english}</td>
             </security:authorize>
 
             <security:authorize access="hasAnyRole('MODERATOR','TEACHER','ADMIN')">
                 <td>
+
                     <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="submit"
-                                    name="workshopIdEdit"
-                                    value="${workshop.id}"
-                                    class="btn btn-warning">Редактировать
-                            </button>
-
-<%--                            <button type="button"--%>
-<%--                                    class="btn btn-danger"--%>
-<%--                                    onclick="deleteQuestion(${question.id})"--%>
-<%--                                    name="questionId"--%>
-<%--                                    value="${question.id}">Удалить--%>
-<%--                            </button>--%>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteQuestionModal">
-                            Удалить
+                        <button type="button" class="btn btn-warning" data-toggle="modal"
+                                data-target="#editQuestionModal${question.id}">Редактировать
                         </button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal"
+                                data-target="#deleteQuestionModal${question.id}">Удалить
+                        </button>
+                    </div>
 
-                        <div class="modal fade" id="deleteQuestionModal" tabindex="-1" role="dialog" aria-labelledby="deleteQuestionModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Удалить вопрос?</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
-                                        <button type="button" class="btn btn-danger" onclick="deleteQuestion(${question.id})">Да</button>
-                                    </div>
+                    <div class="modal fade" id="editQuestionModal${question.id}" tabindex="-1" role="dialog"
+                         aria-labelledby="editQuestionModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editQuestionModalLabel">Редактирование</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="russian-field${question.id}"
+                                                   class="col-form-label">Русский:</label>
+                                            <input type="text" class="form-control" id="russian-field${question.id}"
+                                                   value="${question.russian}"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="english-field${question.id}"
+                                                   class="col-form-label">Английский:</label>
+                                            <input type="text" class="form-control" id="english-field${question.id}"
+                                                   value="${question.english}"/>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                                    <button type="button" class="btn btn-warning" data-dismiss="modal"
+                                            onclick="editQuestion(${question.id})">Сохранить изменения
+                                    </button>
                                 </div>
                             </div>
                         </div>
-
                     </div>
+
+                    <div class="modal fade" id="deleteQuestionModal${question.id}" tabindex="-1" role="dialog"
+                         aria-labelledby="deleteQuestionModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Удалить вопрос?</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет
+                                    </button>
+                                    <button type="button" class="btn btn-danger"
+                                            onclick="deleteQuestion(${question.id})">Да
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </td>
             </security:authorize>
         </tr>
     </c:forEach>
     </tbody>
 </table>
-<%--</form>--%>
 
 <security:authorize access="hasAnyRole('MODERATOR','TEACHER','ADMIN')">
-    <input type="button" class="btn btn-success" value="Добавить вопрос">
+    <button type="button" class="btn btn-success" data-toggle="modal"
+            data-target="#addQuestionModal">Добавить вопрос
+    </button>
+
+    <div class="modal fade" id="addQuestionModal" tabindex="-1" role="dialog"
+         aria-labelledby="addQuestionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addQuestionModalLabel">Добавление нового вопроса в практикум
+                        №${workshop.id}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="russian-field-add" class="col-form-label">Русский:</label>
+                            <input type="text" class="form-control" id="russian-field-add"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="english-field-add" class="col-form-label">Английский:</label>
+                            <input type="text" class="form-control" id="english-field-add"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="addQuestion()">Сохранить
+                        изменения
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </security:authorize>
 
-<%--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"--%>
-<%--        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"--%>
-<%--        crossorigin="anonymous"></script>--%>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>

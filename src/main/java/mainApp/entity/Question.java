@@ -14,6 +14,9 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "workshop_id")
+    private Long workshopId;
+
     @Column(name = "english")
     private String english;
 
@@ -29,7 +32,8 @@ public class Question {
     public Question() {
     }
 
-    public Question(String english, String russian) {
+    public Question(Long workshopId, String english, String russian) {
+        this.workshopId=workshopId;
         this.english = english;
         this.russian = russian;
     }
@@ -40,6 +44,14 @@ public class Question {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Long getWorkshopId() {
+        return workshopId;
+    }
+
+    public void setWorkshopId(Long workshopId) {
+        this.workshopId = workshopId;
     }
 
     public String getEnglish() {
