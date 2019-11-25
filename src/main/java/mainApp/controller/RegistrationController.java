@@ -41,7 +41,7 @@ public class RegistrationController {
     public String processRegistrationForm(
             @Valid @ModelAttribute("crmUser") CrmUser theCrmUser,
             BindingResult theBindingResult, Model theModel){
-				
+
         String userName=theCrmUser.getUserName();
 		logger.info("Processing registration form for: " + userName);
 		
