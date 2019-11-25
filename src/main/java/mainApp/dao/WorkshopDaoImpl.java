@@ -18,7 +18,7 @@ public class WorkshopDaoImpl implements WorkshopDao {
     SessionFactory sessionFactory;
 
     @Override
-    public Workshop getWorkshop(int id) {
+    public Workshop getWorkshop(Long id) {
         Session session = sessionFactory.getCurrentSession();
         return session.get(Workshop.class,id);
     }
@@ -31,7 +31,7 @@ public class WorkshopDaoImpl implements WorkshopDao {
     }
 
     @Override
-    public List<Question> getQuestions(int workshopId) {
+    public List<Question> getQuestions(Long workshopId) {
         Session session = sessionFactory.getCurrentSession();
         Workshop workshop = session.get(Workshop.class,workshopId);
         Hibernate.initialize(workshop.getQuestions());
@@ -39,11 +39,23 @@ public class WorkshopDaoImpl implements WorkshopDao {
     }
 
     @Override
-    public List<Workshop> deleteWorkshop(int workshopId) {
+    public void deleteWorkshop(Long workshopId) {
         Session session = sessionFactory.getCurrentSession();
         Workshop workshop = session.get(Workshop.class,workshopId);
         session.delete(workshop);
-        Query<Workshop> query = session.createQuery("from Workshop", Workshop.class);
-        return query.getResultList();
+    }
+
+    @Override
+    public void editWorkshop(Long workshopId, String explanations) {
+        Session session = sessionFactory.getCurrentSession();
+        Workshop workshop = session.get(Workshop.class,workshopId);
+        workshop.setExplanations(explanations);
+        session.update(workshop);
+    }
+
+    @Override
+    public void addWorkshop(String explanations) {
+        Session session = sessionFactory.getCurrentSession();
+        session.save(new Workshop(explanations));
     }
 }

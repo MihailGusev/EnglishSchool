@@ -6,8 +6,12 @@ import mainApp.entity.Workshop;
 import java.util.List;
 
 public interface WorkshopDao {
-    Workshop getWorkshop(int id);
+    Workshop getWorkshop(Long id);
     List<Workshop> getWorkshops();
-    List<Question> getQuestions(int workshopId);
-    List<Workshop> deleteWorkshop(int workshopId);
+    List<Question> getQuestions(Long workshopId);
+    void deleteWorkshop(Long workshopId);
+
+    void editWorkshop(Long workshopId, String explanations);
+
+    void addWorkshop(String explanations);
 }

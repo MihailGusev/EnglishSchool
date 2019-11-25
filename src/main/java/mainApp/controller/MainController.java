@@ -32,7 +32,7 @@ public class MainController {
 
     @GetMapping(value = "/questions", params = "workshopIdGet")
     public String showQuestionsForWorkshop(HttpServletRequest request,
-                                           @RequestParam("workshopIdGet") int workshopId, Model model) {
+                                           @RequestParam("workshopIdGet") Long workshopId, Model model) {
         model.addAttribute("workshop", workshopService.getWorkshop(workshopId));
         User user = (User) request.getSession().getAttribute("user");
         model.addAttribute("answeredQuestionsIds", userService.findAnsweredQuestionsIds(user.getId()));
@@ -59,6 +59,22 @@ public class MainController {
     public void getSearchResultViaAjax(HttpServletRequest request, @RequestParam("id") Long id) {
         User user = (User) request.getSession().getAttribute("user");
         userService.addAnsweredQuestion(user.getId(), id);
+    }
+
+    @PostMapping(value = "/editWorkshop", params = {"workshopId", "explanations"})
+    public void editWorkshop(@RequestParam("workshopId") long workshopId,
+                             @RequestParam("explanations") String explanations) {
+        workshopService.editWorkshop(workshopId,explanations);
+    }
+
+    @PostMapping(value = "/deleteWorkshop", params = "workshopId")
+    public void deleteWorkshop(@RequestParam("workshopId") long workshopId) {
+        workshopService.deleteWorkshop(workshopId);
+    }
+
+    @PostMapping(value = "/addWorkshop", params = "explanations")
+    public void addWorkshop(@RequestParam("explanations")String explanations) {
+        workshopService.addWorkshop(explanations);
     }
 
     @GetMapping("/moderators")

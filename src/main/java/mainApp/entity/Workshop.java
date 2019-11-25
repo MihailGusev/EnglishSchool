@@ -11,7 +11,7 @@ public class Workshop {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @Column(name = "explanations")
     private String explanations;
@@ -23,11 +23,15 @@ public class Workshop {
     public Workshop() {
     }
 
-    public int getId() {
+    public Workshop(String explanations) {
+        this.explanations = explanations;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

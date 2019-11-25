@@ -17,7 +17,7 @@ public class WorkshopServiceImpl implements WorkshopService {
 
     @Override
     @Transactional
-    public Workshop getWorkshop(int id) {
+    public Workshop getWorkshop(Long id) {
         return workshopDao.getWorkshop(id);
     }
 
@@ -29,13 +29,25 @@ public class WorkshopServiceImpl implements WorkshopService {
 
     @Override
     @Transactional
-    public List<Question> getQuestions(int workshopId) {
+    public List<Question> getQuestions(Long workshopId) {
         return workshopDao.getQuestions(workshopId);
     }
 
     @Override
     @Transactional
-    public List<Workshop> deleteWorkshop(int workshopId) {
-        return workshopDao.deleteWorkshop(workshopId);
+    public void deleteWorkshop(Long workshopId) {
+        workshopDao.deleteWorkshop(workshopId);
+    }
+
+    @Override
+    @Transactional
+    public void editWorkshop(Long workshopId, String explanations) {
+        workshopDao.editWorkshop(workshopId,explanations);
+    }
+
+    @Override
+    @Transactional
+    public void addWorkshop(String explanations) {
+        workshopDao.addWorkshop(explanations);
     }
 }

@@ -10,6 +10,6 @@ import java.util.List;
 public interface UserService extends UserDetailsService {
     User findByUserName(String userName);
     void save(CrmUser crmUser);
-    List<Long> findAnsweredQuestionsIds(long userId);
-    void addAnsweredQuestion(long userId, long questionId);
+    List<Long> findAnsweredQuestionsIds(Long userId);
+    void addAnsweredQuestion(Long userId, Long questionId);
 }

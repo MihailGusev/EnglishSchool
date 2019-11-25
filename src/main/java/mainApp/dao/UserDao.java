@@ -11,7 +11,7 @@ public interface UserDao {
 
     void save(User user);
 
-    List<Long> findAnsweredQuestionsIds(long userId);
+    List<Long> findAnsweredQuestionsIds(Long userId);
 
-    void addAnsweredQuestion(long userId, long questionId);
+    void addAnsweredQuestion(Long userId, Long questionId);
 }

@@ -41,13 +41,48 @@
             let i_old = document.getElementById("success-fail-icon" + id);
             let i_new = document.createElement('i');
             i_new.id = "success-fail-icon" + id;
-            i_new.className = "fas fa-check-circle";
+
+            // const contractions = [
+            //     ['aren\'t', 'are not'],
+            //     ['i\'m', 'i am'],
+            //     ['that\'s', 'that is'],
+            //     ['can\'t', 'can not'],
+            //     ['didn\'t', 'did not'],
+            //     ['don\'t', 'do not'],
+            //     ['he\'ll', 'he will'],
+            //     ['i\'ve', 'i have'],
+            //     ['isn\'t', 'is not'],
+            //     ['let\'s', 'let us'],
+            //     ['she\'ll', 'she will'],
+            //     ['there\'s', 'there is'],
+            //     ['we\'re', 'we are'],
+            //     ['what\'s', 'what is'],
+            //     ['you\'ll', 'you will'],
+            // ];
+            // var questionContractions=[];
+            // var answerVariations=[];
+            // answerVariations.push(answer.toLowerCase());
+            // for (var i=0;i<contractions.length;i++){
+            //     for (var j=0;j<contractions[i].length;j++) {
+            //         var index=0;
+            //         while (true){
+            //
+            //             index=answer.indexOf(contractions[i][j],index);
+            //                 break;
+            //             index=
+            //         }
+            //     }
+            // }
+
+
             if (input === answer) {
+                document.getElementById(id).setAttribute("disabled","true");
+                document.getElementById("button-addon2"+id).setAttribute("disabled","true");
                 i_new.className = "fas fa-check-circle";
                 $("#success-fail-alert" + id)
                     .addClass('alert-success')
                     .removeClass('alert-danger');
-                searchViaAjax(id);
+                addAnsweredQuestion(id);
             } else {
                 i_new.className = "fas fa-times-circle";
                 $("#success-fail-alert" + id)
@@ -59,7 +94,7 @@
     </script>
 
     <script>
-        function searchViaAjax(id) {
+        function addAnsweredQuestion(id) {
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "./addAnsweredQuestion?id=" + id, false);
             xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
@@ -187,14 +222,17 @@
                         <div class="input-group mb-3">
                             <input id="${question.id}" type="text" class="form-control" placeholder="Ответ"
                             <c:if test="${answeredQuestionsIds.contains(question.id)}">
-                                   value="${question.english}"
+                                   value="${question.english}" disabled
                             </c:if>
                                    aria-describedby="button-addon2"
                                    onkeyup="checkForMistakes(getTextFromTextBox(${question.id}),'${question.english}',${question.id},event)">
 
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button" id="button-addon2"
-                                        onclick="checkForMistakes(getTextFromTextBox(${question.id}),'${question.english}',${question.id},13)">
+                                <button class="btn btn-outline-secondary" type="button" id="button-addon2${question.id}"
+                                        onclick="checkForMistakes(getTextFromTextBox(${question.id}),'${question.english}',${question.id},13)"
+                                        <c:if test="${answeredQuestionsIds.contains(question.id)}">
+                                            disabled
+                                        </c:if>>
                                     Проверить
                                 </button>
                             </div>
@@ -238,7 +276,7 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="editQuestionModalLabel">Редактирование</h5>
+                                    <h5 class="modal-title" id="editQuestionModalLabel">Редактирование вопроса №${vs.count}</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -274,10 +312,19 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Удалить вопрос?</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Удалить вопрос №${vs.count}?</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label class="col-form-label">Английский: ${question.english}</label>
+                                            <br>
+                                            <label class="col-form-label">Русский: ${question.russian}</label>
+                                        </div>
+                                    </form>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет

@@ -1,7 +1,5 @@
 package mainApp.entity;
 
-import mainApp.validation.FieldMatch;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +10,7 @@ public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "workshop_id")
     private Long workshopId;
@@ -38,11 +36,11 @@ public class Question {
         this.russian = russian;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -49,7 +49,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<Long> findAnsweredQuestionsIds(long userId) {
+    public List<Long> findAnsweredQuestionsIds(Long userId) {
         Session session = sessionFactory.getCurrentSession();
         User user = session.get(User.class,userId);
         Hibernate.initialize(user.getQuestions());
@@ -61,7 +61,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void addAnsweredQuestion(long userId, long questionId) {
+    public void addAnsweredQuestion(Long userId, Long questionId) {
         Session session = sessionFactory.getCurrentSession();
         User user = session.get(User.class,userId);
         Question question=session.get(Question.class,questionId);

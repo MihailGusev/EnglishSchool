@@ -60,13 +60,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional
-	public List<Long> findAnsweredQuestionsIds(long userId) {
+	public List<Long> findAnsweredQuestionsIds(Long userId) {
 		return userDao.findAnsweredQuestionsIds(userId);
 	}
 
 	@Override
 	@Transactional
-	public void addAnsweredQuestion(long userId, long questionId) {
+	public void addAnsweredQuestion(Long userId, Long questionId) {
 		userDao.addAnsweredQuestion(userId, questionId);
 	}
 
