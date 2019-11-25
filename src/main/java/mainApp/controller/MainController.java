@@ -82,8 +82,9 @@ public class MainController {
         return "moderators";
     }
 
-    @GetMapping("/admins")
-    public String showSystems() {
-        return "admins";
+    @GetMapping("/teacher")
+    public String showTeacherPage(Model model) {
+        model.addAttribute("newStudents",userService.getNewUsers());
+        return "teacher";
     }
 }

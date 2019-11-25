@@ -14,4 +14,6 @@ public interface UserDao {
     List<Long> findAnsweredQuestionsIds(Long userId);
 
     void addAnsweredQuestion(Long userId, Long questionId);
+
+    List<User> getNewUsers();
 }

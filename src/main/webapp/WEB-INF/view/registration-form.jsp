@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!doctype html>
-<html lang="en">
 
 <head>
 
@@ -38,7 +37,7 @@
         <div class="panel panel-primary">
 
             <div class="panel-heading">
-                <div class="panel-title">Register New User</div>
+                <div class="panel-title">Заявка на доступ</div>
             </div>
 
             <div style="padding-top: 30px" class="panel-body">
@@ -68,21 +67,21 @@
                     <div style="margin-bottom: 25px" class="input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                         <form:errors path="userName" cssClass="error"/>
-                        <form:input path="userName" placeholder="email (*)" class="form-control"/>
+                        <form:input path="userName" placeholder="Email (*)" class="form-control"/>
                     </div>
 
                     <!-- Password -->
                     <div style="margin-bottom: 25px" class="input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                         <form:errors path="password" cssClass="error"/>
-                        <form:password path="password" placeholder="password (*)" class="form-control"/>
+                        <form:password path="password" placeholder="Пароль (*)" class="form-control"/>
                     </div>
 
                     <!-- Confirm Password -->
                     <div style="margin-bottom: 25px" class="input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                         <form:errors path="matchingPassword" cssClass="error"/>
-                        <form:password path="matchingPassword" placeholder="confirm password (*)" class="form-control"/>
+                        <form:password path="matchingPassword" placeholder="Повторите пароль (*)" class="form-control"/>
                     </div>
 
 
@@ -90,14 +89,14 @@
                     <div style="margin-bottom: 25px" class="input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                         <form:errors path="firstName" cssClass="error"/>
-                        <form:input path="firstName" placeholder="first name (*)" class="form-control"/>
+                        <form:input path="firstName" placeholder="Имя (*)" class="form-control"/>
                     </div>
 
                     <!-- Last name -->
                     <div style="margin-bottom: 25px" class="input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                         <form:errors path="lastName" cssClass="error"/>
-                        <form:input path="lastName" placeholder="last name (*)" class="form-control"/>
+                        <form:input path="lastName" placeholder="Фамилия (*)" class="form-control"/>
                     </div>
 
                     <!-- Register Button -->

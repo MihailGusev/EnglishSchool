@@ -1,6 +1,7 @@
 package mainApp.dao;
 
 import mainApp.entity.Question;
+import mainApp.entity.Role;
 import mainApp.entity.User;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -67,5 +69,22 @@ public class UserDaoImpl implements UserDao {
         Question question=session.get(Question.class,questionId);
         question.addUser(user);
         session.saveOrUpdate(question);
+    }
+
+    @Override
+    public List<User> getNewUsers() {
+        Session session = sessionFactory.getCurrentSession();
+        Query<User>query = session.createQuery("from User");
+        List<User> users=query.getResultList();
+        List<User> newUsers= new ArrayList<>();
+        for (User user:users){
+            Collection<Role> roles=user.getRoles();
+            for (Role role:roles)
+                if(role.getName().equals("ROLE_NEW")){
+                    newUsers.add(user);
+                    break;
+                }
+        }
+        return newUsers;
     }
 }

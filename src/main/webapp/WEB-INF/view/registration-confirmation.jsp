@@ -11,7 +11,7 @@
 
 <hr>
 
-<a href="${pageContext.request.contextPath}/login">Back to login page</a>
+<a href="${pageContext.request.contextPath}/login">Назад на страницу входа</a>
 
 </body>
 

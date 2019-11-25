@@ -57,6 +57,16 @@
         }
     </script>
 
+    <script type="text/javascript">
+        function goToTeacherPage() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "./teacher", false);
+            xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+            xhr.send();
+            location.href = "./teacher"
+        }
+    </script>
+
 
     <title>Практика</title>
 </head>
@@ -78,10 +88,17 @@
                     <security:authentication property="principal.username"/>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <div class="dropdown-item">Роль(и): <security:authentication
-                            property="principal.authorities"/></div>
+                    <div class="dropdown-item">Роль(и):
+                        <security:authentication property="principal.authorities"/>
+                    </div>
                     <div class="dropdown-item">Имя: ${user.firstName}, Фамилия: ${user.lastName}</div>
                     <div class="dropdown-divider"></div>
+                    <security:authorize access="hasAnyRole('TEACHER','ADMIN')">
+                        <div class="dropdown-item">
+                            <input type="button" value="Преподавательская" class="btn btn-primary" onclick="goToTeacherPage()"/>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                    </security:authorize>
                     <div class="dropdown-item">
                         <input type="button" value="Выход" class="btn btn-primary" onclick="logout()"/>
                     </div>
@@ -237,7 +254,6 @@
     </div>
 </security:authorize>
 
-<%--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>--%>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
