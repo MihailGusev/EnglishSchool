@@ -11,10 +11,15 @@ import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.WebApplicationInitializer;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.util.Properties;
@@ -24,7 +29,7 @@ import java.util.Properties;
 @EnableTransactionManagement
 @ComponentScan(basePackages = "mainApp")
 @PropertySource("classpath:mysql.properties")
-public class AppConfig {
+public class AppConfig implements WebApplicationInitializer {
 
 	// set up variable to hold the properties
     @Autowired
@@ -103,5 +108,16 @@ public class AppConfig {
 
         // setup transaction manager based on session factory
         return new HibernateTransactionManager(sessionFactory);
+    }
+
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
+        characterEncodingFilter.setEncoding("UTF-8");
+        characterEncodingFilter.setForceEncoding(true);
+
+        FilterRegistration.Dynamic filterRegistration = servletContext
+                .addFilter("characterEncodingFilter", characterEncodingFilter);
+        filterRegistration.addMappingForUrlPatterns(null, false, "/*");
     }
 }
