@@ -112,12 +112,5 @@ public class AppConfig implements WebApplicationInitializer {
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
-        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
-        characterEncodingFilter.setEncoding("UTF-8");
-        characterEncodingFilter.setForceEncoding(true);
-
-        FilterRegistration.Dynamic filterRegistration = servletContext
-                .addFilter("characterEncodingFilter", characterEncodingFilter);
-        filterRegistration.addMappingForUrlPatterns(null, false, "/*");
     }
 }
