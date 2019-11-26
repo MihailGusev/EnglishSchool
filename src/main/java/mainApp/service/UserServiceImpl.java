@@ -78,6 +78,30 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional
+	public void confirmUser(Long id) {
+		userDao.confirmUser(id);
+	}
+
+	@Override
+	@Transactional
+	public void blockUser(Long id) {
+		userDao.blockUser(id);
+	}
+
+	@Override
+	@Transactional
+	public void confirmAll() {
+		userDao.confirmAll();
+	}
+
+	@Override
+	@Transactional
+	public void blockAll() {
+		userDao.blockAll();
+	}
+
+	@Override
+	@Transactional
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 		User user = userDao.findByUserName(userName);
 		if (user == null) {

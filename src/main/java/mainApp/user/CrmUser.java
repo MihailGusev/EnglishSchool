@@ -9,13 +9,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @FieldMatch.List({
-        @FieldMatch(first = "password",second = "matchingPassword", message = "The password fields must match")
+        @FieldMatch(first = "password",second = "matchingPassword", message = "Пароли не совпадают")
 })
 public class CrmUser {
 
-    private static final String message="is required";
+    private static final String message="Поле должно быть заполнено";
 
-    @Email
+    @ValidEmail
     @NotNull(message = message)
     @Size(min=1,message = message)
     private String userName;

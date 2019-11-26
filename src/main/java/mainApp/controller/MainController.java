@@ -24,6 +24,7 @@ public class MainController {
     @Autowired
     private QuestionService questionService;
 
+
     @GetMapping("/")
     public String showWorkshops(Model model) {
         model.addAttribute("workshops", workshopService.getWorkshops());
@@ -77,14 +78,29 @@ public class MainController {
         workshopService.addWorkshop(explanations);
     }
 
-    @GetMapping("/moderators")
-    public String showLeaders() {
-        return "moderators";
-    }
-
     @GetMapping("/teacher")
     public String showTeacherPage(Model model) {
         model.addAttribute("newStudents",userService.getNewUsers());
         return "teacher";
+    }
+
+    @PostMapping(value = "/confirmUser",params = "userId")
+    public void confirmUser(@RequestParam("userId")Long userId){
+        userService.confirmUser(userId);
+    }
+
+    @PostMapping(value = "/blockUser",params = "userId")
+    public void blockUser(@RequestParam("userId")Long userId){
+        userService.blockUser(userId);
+    }
+
+    @PostMapping(value = "/confirmAll")
+    public void confirmAll(){
+        userService.confirmAll();
+    }
+
+    @PostMapping(value = "/blockAll")
+    public void blockAll(){
+        userService.blockAll();
     }
 }

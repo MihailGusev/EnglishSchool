@@ -39,6 +39,46 @@
         }
     </script>
 
+    <script type="text/javascript">
+        function confirmUser(userId) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "./confirmUser?userId="+userId, false);
+            xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+            xhr.send();
+            location.reload();
+        }
+    </script>
+
+    <script type="text/javascript">
+        function blockUser(userId) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "./blockUser?userId="+userId, false);
+            xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+            xhr.send();
+            location.reload();
+        }
+    </script>
+
+    <script type="text/javascript">
+        function confirmAll() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "./confirmAll", false);
+            xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+            xhr.send();
+            location.reload();
+        }
+    </script>
+
+    <script type="text/javascript">
+        function blockAll() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "./blockAll", false);
+            xhr.setRequestHeader("${_csrf.headerName}", "${_csrf.token}");
+            xhr.send();
+            location.reload();
+        }
+    </script>
+
     <title>Преподавательская</title>
 </head>
 <body>
@@ -73,7 +113,17 @@
 
 <hr>
 
-<h3>Новые заявки на доступ:</h3>
+<div>
+    <h3>Новые заявки на доступ:</h3>
+
+    <div class="btn-group" role="group" aria-label="Basic example" style="margin-left: 1%">
+        <button type="button" class="btn btn-success" onclick="confirmAll()">Одобрить всех</button>
+        <button type="button" class="btn btn-warning" onclick="blockAll()">Блокировать всех</button>
+    </div>
+
+    <br>
+    <br>
+</div>
 
 <table class="table">
     <thead class="thead-dark">
@@ -87,12 +137,18 @@
     </thead>
 
     <tbody>
-    <c:forEach var="student" items="${newStudents}" varStatus="vs">
+    <c:forEach var="user" items="${newStudents}" varStatus="vs">
         <tr>
             <th>${vs.count}</th>
-            <td>${student.username}</td>
-            <td>${student.firstName}</td>
-            <td>${student.lastName}</td>
+            <td>${user.username}</td>
+            <td>${user.firstName}</td>
+            <td>${user.lastName}</td>
+            <td>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-success" onclick="confirmUser(${user.id})">Одобрить</button>
+                    <button type="button" class="btn btn-warning" onclick="blockUser(${user.id})">Блокировать</button>
+                </div>
+            </td>
         </tr>
     </c:forEach>
     </tbody>

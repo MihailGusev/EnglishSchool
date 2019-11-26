@@ -16,4 +16,12 @@ public interface UserDao {
     void addAnsweredQuestion(Long userId, Long questionId);
 
     List<User> getNewUsers();
+
+    void confirmUser(Long id);
+
+    void blockUser(Long id);
+
+    void confirmAll();
+
+    void blockAll();
 }

@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ValidEmail {
-	String message() default "Invalid email";
+	String message() default "Неверный Email";
 
 	Class<?>[] groups() default {};
 

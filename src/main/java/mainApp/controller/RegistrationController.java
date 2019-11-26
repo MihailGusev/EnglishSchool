@@ -23,8 +23,6 @@ public class RegistrationController {
     @Autowired
     private UserService userService;
 
-	private Logger logger = Logger.getLogger(getClass().getName());
-
     @InitBinder
     public void initBinder(WebDataBinder dataBinder){
         StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
@@ -43,7 +41,6 @@ public class RegistrationController {
             BindingResult theBindingResult, Model theModel){
 
         String userName=theCrmUser.getUserName();
-		logger.info("Processing registration form for: " + userName);
 		
         if(theBindingResult.hasErrors()){
             return "registration-form";
@@ -51,14 +48,12 @@ public class RegistrationController {
         User existing = userService.findByUserName(userName);
         if(existing!=null){
             theModel.addAttribute("crmUser",new CrmUser());
-            theModel.addAttribute("registrationError","This email already in use");
+            theModel.addAttribute("registrationError","Этот Email уже занят");
             return "registration-form";
         }
 
         userService.save(theCrmUser);
-		
-		logger.info("Successfully created user: " + userName);
-		
+
         return "registration-confirmation";
     }
 }

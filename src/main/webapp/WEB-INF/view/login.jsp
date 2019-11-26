@@ -4,7 +4,7 @@
 
 <html>
 <head>
-    <title>Login Page</title>
+    <title>Вход</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -25,7 +25,7 @@
         <div class="panel panel-info">
 
             <div class="panel-heading">
-                <div class="panel-title">Sign In</div>
+                <div class="panel-title">Вход</div>
             </div>
 
             <div style="padding-top: 30px" class="panel-body">
@@ -42,14 +42,14 @@
                                 <!-- Check for login error -->
                                 <c:if test="${param.error != null}">
                                     <div class="alert alert-danger col-xs-offset-1 col-xs-10">
-                                        Invalid email or password.
+                                        Неверный email или пароль.
                                     </div>
                                 </c:if>
 
                                 <!-- Check for logout -->
                                 <c:if test="${param.logout != null}">
                                     <div class="alert alert-success col-xs-offset-1 col-xs-10">
-                                        You have been logged out.
+                                        Вы вышли из системы.
                                     </div>
                                 </c:if>
 
@@ -61,20 +61,20 @@
                     <div style="margin-bottom: 25px" class="input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
 
-                        <input type="text" name="username" placeholder="email" class="form-control">
+                        <input type="text" name="username" placeholder="Email" class="form-control">
                     </div>
 
                     <!-- Password -->
                     <div style="margin-bottom: 25px" class="input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
 
-                        <input type="password" name="password" placeholder="password" class="form-control">
+                        <input type="password" name="password" placeholder="Пароль" class="form-control">
                     </div>
 
                     <!-- Login/Submit Button -->
                     <div style="margin-top: 10px" class="form-group">
                         <div class="col-sm-6 controls">
-                            <button type="submit" class="btn btn-success">Login</button>
+                            <button type="submit" class="btn btn-success">Войти</button>
                         </div>
                     </div>
 
@@ -86,7 +86,7 @@
 
         <div>
             <a href="${pageContext.request.contextPath}/register/showRegistrationForm" class="btn btn-primary"
-               role="button" aria-pressed="true">I am a new student</a>
+               role="button" aria-pressed="true">Я новенький</a>
         </div>
 
     </div>

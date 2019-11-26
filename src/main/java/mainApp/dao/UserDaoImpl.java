@@ -87,4 +87,45 @@ public class UserDaoImpl implements UserDao {
         }
         return newUsers;
     }
+
+    @Override
+    public void confirmUser(Long id) {
+        Session session = sessionFactory.getCurrentSession();
+        User user = session.get(User.class,id);
+        Role role = session.get(Role.class, 2L);
+        Collection<Role>roles=new ArrayList<>();
+        roles.add(role);
+        user.setRoles(roles);
+        session.save(user);
+    }
+
+    @Override
+    public void blockUser(Long id) {
+        Session session = sessionFactory.getCurrentSession();
+        User user = session.get(User.class,id);
+        session.delete(user);
+    }
+
+    @Override
+    public void confirmAll() {
+        Session session = sessionFactory.getCurrentSession();
+        Role role = session.get(Role.class, 2L);
+        Collection<Role>roles=new ArrayList<>();
+        roles.add(role);
+        Query query=session.createQuery("SELECT u FROM User u JOIN u.roles r WHERE r.id=:idRole");
+        query.setParameter("idRole",1l);
+        List<User>users=query.getResultList();
+        for (User user:users)
+            user.setRoles(roles);
+    }
+
+    @Override
+    public void blockAll() {
+        Session session = sessionFactory.getCurrentSession();
+        Query query=session.createQuery("SELECT u FROM User u JOIN u.roles r WHERE r.id=:idRole");
+        query.setParameter("idRole",1l);
+        List<User>users=query.getResultList();
+        for (User user:users)
+            session.delete(user);
+    }
 }
