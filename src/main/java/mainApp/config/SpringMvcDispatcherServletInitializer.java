@@ -19,8 +19,8 @@ public class SpringMvcDispatcherServletInitializer extends AbstractAnnotationCon
     protected String[] getServletMappings() {
         return new String[]{"/"};
     }
-    @Override
-    protected Filter[] getServletFilters() {
-        return new Filter[]{new CharacterSetFilter()};
-    }
+//    @Override
+//    protected Filter[] getServletFilters() {
+//        return new Filter[]{new CharacterSetFilter()};
+//    }
 }
